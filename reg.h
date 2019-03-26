@@ -9,8 +9,11 @@
 
 #define SET_BIT(addr, bit) (REG(addr) |= UINT32_1 << (bit))
 #define CLEAR_BIT(addr, bit) (REG(addr) &= ~(UINT32_1 << (bit)))
-
-// #define READ_BIT(addr, bit) ??????
+//Btn
+#define BLUE_Btn_PA0 0
+#define READ_BIT(addr, bit) (REG(addr) & (UINT32_1 << (bit)))
+#define GPIOx_IDR_OFFSET 0x10
+#define GPIOx_IDR_BIT(y) (y)
 
 //RCC
 #define RCC_BASE 0x40023800
