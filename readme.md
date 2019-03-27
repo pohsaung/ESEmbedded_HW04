@@ -10,6 +10,22 @@
 
 ## 2. 實驗步驟: 
 
+0. 
+(a)由 User manual p16得知藍色按鈕在PA0
+(b)由 User manual p30得知設定PD (設定moder:00 PUPDR:10)
+(c)由 Reference manual p283知道offeset:0x10
+(d)READ_BIT做&看何時變化
+
+由上(a)到(b)可先令好參數如下在reg.h檔中
+```
+#define BLUE_Btn_PA0 0
+
+#define READ_BIT(addr, bit) (REG(addr) & (UINT32_1 << (bit)))
+
+#define GPIOx_IDR_OFFSET 0x10
+
+#define GPIOx_IDR_BIT(y) (y)
+```
 
 1. 先建立`btn_init`讓按鍵其初始化
 ```
@@ -44,20 +60,38 @@ int readbit(unsigned int addr,unsigned int bit)
 
 ```
 void blink(unsigned int led)
-
 {
+
 	led_init(led);
 	btn_init(BLUE_Btn_PA0);
+	unsigned int i;              
+
 	while (1)
-	{	
-            
-            if(readbit(GPIO_BASE(GPIO_PORTA) + GPIOx_IDR_OFFSET,BLUE_Btn_PA0)==1 )
-		{	
-                while (1)
-               {	
-                    SET_BIT(GPIO_BASE(GPIO_PORTD) + GPIOx_BSRR_OFFSET, BSy_BIT(led));
-		 }
-	}}
+	{
+		
+		if(readbit(GPIO_BASE(GPIO_PORTA) + GPIOx_IDR_OFFSET,BLUE_Btn_PA0)==1 )
+		{
+
+			while(1)
+			{
+			
+				//set GPIOD led pin
+				SET_BIT(GPIO_BASE(GPIO_PORTD) + GPIOx_BSRR_OFFSET, BSy_BIT(led));
+				for (i = 0; i < 100000; i++)
+						;
+					
+				//reset GPIOD led pin
+				SET_BIT(GPIO_BASE(GPIO_PORTD) + GPIOx_BSRR_OFFSET, BRy_BIT(led));
+
+				for (i = 0; i < 100000; i++)
+					;
+			}
+
+	
+		}
+
+	}
+	
 }
 ```
 

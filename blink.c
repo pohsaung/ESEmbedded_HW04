@@ -66,7 +66,7 @@ void blink(unsigned int led)
 
 	led_init(led);
 	btn_init(BLUE_Btn_PA0);
-	                   
+	unsigned int i;              
 
 	while (1)
 	{
@@ -79,9 +79,14 @@ void blink(unsigned int led)
 			
 				//set GPIOD led pin
 				SET_BIT(GPIO_BASE(GPIO_PORTD) + GPIOx_BSRR_OFFSET, BSy_BIT(led));
+				for (i = 0; i < 100000; i++)
+						;
+					
+				//reset GPIOD led pin
+				SET_BIT(GPIO_BASE(GPIO_PORTD) + GPIOx_BSRR_OFFSET, BRy_BIT(led));
 
-
-
+				for (i = 0; i < 100000; i++)
+					;
 			}
 
 	
